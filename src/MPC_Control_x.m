@@ -19,11 +19,11 @@ classdef MPC_Control_x < MPC_Control
       xs = sdpvar(n, 1);
       us = sdpvar(m, 1);
       
-      N = 20 %% horizon CHANGE THIS LATER
+      N = 100; %% horizon CHANGE THIS LATER
       
       % Predicted state and input trajectories
-      x = sdpvar(n, N);
-      u = sdpvar(m, N-1);
+      x = sdpvar(n, N,'full');
+      u = sdpvar(m, N-1,'full');
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % SYSTEM DEFINITION : 
@@ -40,9 +40,9 @@ classdef MPC_Control_x < MPC_Control
       % CONSTRAINTS DEFINITION : 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % u in U = { u | Mu <= m }
-      Mf = [1;-1]; mf = [0.3; 0.3];
+      Mc = [1;-1]; mc = [0.3; 0.3];
       % x in X = { x | Fx <= f }
-      Ff = [0 1 0 0; 0 -1 0 0 ]; ff = [0.035; 0.035];
+      Fc = [0 1 0 0; 0 -1 0 0 ]; fc = [0.035; 0.035];
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % TERMINAL SET/COST : 
@@ -54,7 +54,7 @@ classdef MPC_Control_x < MPC_Control
       Acl = A+B*K;
         
       % Terminal set computation
-      Xf = polytope([Ff;Mf*K],[ff;mf]);
+      Xf = polytope([Fc;Mc*K],[fc;mc]);
       while true
           pvXf = Xf;
           [T,t] = double(Xf);
@@ -66,26 +66,40 @@ classdef MPC_Control_x < MPC_Control
       [Ff,ff] = double(Xf);
       
       % Plotting of terminal set
-      Xf.projection(1:2).plot();
+%        figure();
+%        plot(Xf.projection(1:2), 'b');
+%        title('X_f for subsystem x');
+%        xlabel('$\dot{\beta}$', 'interpreter', 'latex');
+%        ylabel('\beta');
+%        figure();
+%        plot(Xf.projection(2:3), 'b');
+%        title('X_f for subsystem x');
+%        xlabel('\beta');
+%        ylabel('$\dot{x}$', 'interpreter', 'latex');
+%        figure();
+%        plot(Xf.projection(3:4), 'b');
+%        title('X_f for subsystem x');
+%        xlabel('$\dot{x}$', 'interpreter', 'latex');
+%        ylabel('x');
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % MPC CONTROLLER DEFINITION : 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       %YALMIP Constraint satisfaction
-      con = (x(:,2) == A*x(:,1) + B*u(:,1)) + (Mf*u(:,1) <= mf);
+      con = (x(:,2) == A*x(:,1) + B*u(:,1)) + (Mc*u(:,1) <= mc);
       obj = u(:,1)'*R*u(:,1);
       for i = 2:N-1
-        con = con + (x(:,i+1) == A*x(:,i) + B*u(:,i));
-        con = con + (Ff*x(:,i) <= ff) + (Mf*u(:,i) <= mf);
-        obj = obj + x(:,i)'*Q*x(:,i) + u(:,i)'*R*u(:,i);
+          con = con + (x(:,i+1) == A*x(:,i) + B*u(:,i));
+          con = con + (Fc*x(:,i) <= fc) + (Mc*u(:,i) <= mc);
+          obj = obj + (x(:,i)-xs)'*Q*(x(:,i)-xs) + (u(:,i)-us)'*R*(u(:,i)-us);
       end
-      con = con + (Ff*x(:,N) <= ff);
-      obj = obj + x(:,N)'*Qf*x(:,N);
+      con = con + (Ff*(x(:,N)-xs) <= ff);
+      obj = obj + (x(:,N)-xs)'*Qf*(x(:,N)-xs);
       
-      % YALMIP OPTIMIZER
       ctrl_opt = optimizer(con, obj, sdpsettings('solver','gurobi'), ...
         {x(:,1), xs, us}, u(:,1));
+
     
     end
     
