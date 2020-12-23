@@ -1,7 +1,7 @@
 classdef MPC_Control_y < MPC_Control
   
   methods
-    % Design a YALMIP optimizer object that takes a steady-state state
+    % YALMIP optimizer object that takes a steady-state state
     % and input (xs, us) and returns a control input
     function ctrl_opt = setup_controller(mpc)
 

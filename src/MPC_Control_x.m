@@ -1,7 +1,7 @@
 classdef MPC_Control_x < MPC_Control
   
   methods
-    % Design a YALMIP optimizer object that takes a steady-state state
+    % YALMIP optimizer object that takes a steady-state state
     % and input (xs, us) and returns a control input
     function ctrl_opt = setup_controller(mpc)
 
@@ -68,17 +68,25 @@ classdef MPC_Control_x < MPC_Control
       % Plotting of terminal set
       Xf.projection(1:2).plot();
       
-      % WRITE THE CONSTRAINTS AND OBJECTIVE HERE
-      con = [];
-      obj = 0;
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      % MPC CONTROLLER DEFINITION : 
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+      %YALMIP Constraint satisfaction
+      con = (x(:,2) == A*x(:,1) + B*u(:,1)) + (Mf*u(:,1) <= mf);
+      obj = u(:,1)'*R*u(:,1);
+      for i = 2:N-1
+        con = con + (x(:,i+1) == A*x(:,i) + B*u(:,i));
+        con = con + (Ff*x(:,i) <= ff) + (Mf*u(:,i) <= mf);
+        obj = obj + x(:,i)'*Q*x(:,i) + u(:,i)'*R*u(:,i);
+      end
+      con = con + (Ff*x(:,N) <= ff);
+      obj = obj + x(:,N)'*Qf*x(:,N);
       
-      % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      
-      
+      % YALMIP OPTIMIZER
       ctrl_opt = optimizer(con, obj, sdpsettings('solver','gurobi'), ...
         {x(:,1), xs, us}, u(:,1));
+    
     end
     
     
