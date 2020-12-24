@@ -120,7 +120,6 @@ classdef MPC_Control_z < MPC_Control
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % INPUTS
       %   ref    - reference to track
-      %   d_est  - disturbance estimate
       % OUTPUTS
       %   xs, us - steady-state target
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,25 +129,32 @@ classdef MPC_Control_z < MPC_Control
       xs = sdpvar(n, 1);
       us = sdpvar;
       
-      % Reference position (Ignore this before Todo 3.3)
-      ref = sdpvar;
-            
+      % Reference position
+      ref = sdpvar;            
+      
       % Disturbance estimate (Ignore this before Part 5)
       d_est = sdpvar(1);
       
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
-      % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
-      con = [];
-      obj = 0;
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      % CONSTRAINTS DEFINITION : 
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      A = mpc.A;
+      B = mpc.B;
+      C = mpc.C;
+      D = mpc.D;
+      % Constraints
+      % u in U = { u | Mu <= m }
+      M = [1;-1]; 
+      m = [0.3; 0.2];
+      con = [A*xs + B*us == xs,...
+             C*xs + D*us == ref,...
+             M*us <= m];
+      obj = us^2;
       
-
-      % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      % Computing the steady-state target
+      target_opt = optimizer(con, obj, sdpsettings('solver', 'gurobi'), ...
+          {ref, d_est}, {xs, us});
       
-      
-      % Compute the steady-state target
-      target_opt = optimizer(con, obj, sdpsettings('solver', 'gurobi'), {ref, d_est}, {xs, us});
     end
     
     

@@ -106,21 +106,31 @@ classdef MPC_Control_y < MPC_Control
       xs = sdpvar(n, 1);
       us = sdpvar;
       
-      % Reference position (Ignore this before Todo 3.2)
+      % Reference position
       ref = sdpvar;            
-            
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
-      % You can use the matrices mpc.A, mpc.B, mpc.C and mpc.D
-      con = [];
-      obj = 0;
       
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      % CONSTRAINTS DEFINITION : 
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      A = mpc.A;
+      B = mpc.B;
+      C = mpc.C;
+      % Constraints
+      % u in U = { u | Mu <= m }
+      M = [1;-1]; 
+      m = [0.3; 0.3];
+      % x in X = { x | Fx <= f }
+      F = [0 1 0 0; 0 -1 0 0]; 
+      f = [0.035; 0.035];
+      con = [A*xs + B*us == xs,...
+             C*xs == ref,...
+             F*xs <= f,...
+             M*us <= m];
+      obj = us^2;
       
-      % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE 
-      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      
-      % Compute the steady-state target
-      target_opt = optimizer(con, obj, sdpsettings('solver', 'gurobi'), ref, {xs, us});
+      % Computing the steady-state target
+      target_opt = optimizer(con, obj, sdpsettings('solver', 'gurobi'), ...
+          ref, {xs, us});
       
     end
   end
