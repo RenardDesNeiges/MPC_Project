@@ -19,7 +19,7 @@ classdef MPC_Control_y < MPC_Control
       xs = sdpvar(n, 1);
       us = sdpvar(m, 1);
       
-      N = 20; %% horizon CHANGE THIS LATER
+      N = 100; %% horizon CHANGE THIS LATER
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -34,7 +34,7 @@ classdef MPC_Control_y < MPC_Control
       A = mpc.A;
       B = mpc.B;
       % optimization cost ==> we optimize for min{I(x,u)} with I(x,u) = x'Qx + u'Ru
-      Q = eye(n); Q(n,n) = 100; Q(n-1,n-1) = 10;
+      Q = eye(n); Q(n,n) = 100; Q(n-1,n-1) = 5;
       R = eye(m);
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

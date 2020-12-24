@@ -154,14 +154,14 @@ xlabel('time [s]');
 subplot(2,2,4)
 plot(t_plot,yaw(1,:),t_plot,yaw(2,:))
 legend('vel yaw [rad/s]', 'yaw [rad]');
-title('z states');
+title('yaw states');
 xlabel('time [s]');
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SIMULATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+close all
 sim = quad.sim(mpc_x,mpc_y,mpc_z,mpc_yaw);
 quad.plot(sim);
 

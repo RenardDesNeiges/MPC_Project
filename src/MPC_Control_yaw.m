@@ -15,11 +15,11 @@ classdef MPC_Control_yaw < MPC_Control
 
       [n,m] = size(mpc.B);
       
-      % Steady-state targets (Ignore this before Todo 3.2)
+      % Steady-state targets
       xs = sdpvar(n, 1);
       us = sdpvar(m, 1);
       
-      N = 20; %% horizon CHANGE THIS LATER
+      N = 100; %% horizon CHANGE THIS LATER
       
       % Predicted state and input trajectories
       x = sdpvar(n, N);
@@ -83,10 +83,10 @@ classdef MPC_Control_yaw < MPC_Control
       for i = 2:N-1
         con = con + (x(:,i+1) == A*x(:,i) + B*u(:,i));
         con = con + (Fc*x(:,i) <= fc) + (Mc*u(:,i) <= mc);
-        obj = obj + x(:,i)'*Q*x(:,i) + u(:,i)'*R*u(:,i);
+        obj = obj + (x(:,i)-xs)'*Q*(x(:,i)-xs) + (u(:,i)-us)'* R *(u(:,i)-us);
       end
       con = con + (Ff*x(:,N) <= ff);
-      obj = obj + x(:,N)'*Qf*x(:,N);
+      obj = obj + (x(:,N)-xs)'*Qf*(x(:,N)-xs);
 
       % YALMIP OPTIMIZER
       ctrl_opt = optimizer(con, obj, sdpsettings('solver','gurobi'), ...
