@@ -33,7 +33,7 @@ classdef MPC_Control_yaw < MPC_Control
       A = mpc.A;
       B = mpc.B;
       % optimization cost ==> we optimize for min{I(x,u)} with I(x,u) = x'Qx + u'Ru
-      Q = eye(n); Q(n,n) = 10;
+      Q = eye(n); Q(n,n) = 2;
       R = eye(m);
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

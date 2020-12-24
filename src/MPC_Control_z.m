@@ -47,7 +47,7 @@ classdef MPC_Control_z < MPC_Control
       A = mpc.A;
       B = mpc.B;
       % optimization cost ==> we optimize for min{I(x,u)} with I(x,u) = x'Qx + u'Ru
-      Q = eye(n); Q(n,n) = 100; Q(n-1,n-1) = 10;
+      Q = eye(n); Q(n,n) = 50; Q(n-1,n-1) = 5;
       R = eye(m);
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
