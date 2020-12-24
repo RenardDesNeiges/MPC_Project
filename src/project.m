@@ -2,6 +2,7 @@ clc
 clear
 tbxmanager restorepath
 addpath '/Users/renard/Documents/etudes/EPFLMA1/MPC/casadi-osx-matlabR2015a-v3.5.5'
+addpath '/Users/renard/Documents/etudes/EPFLMA1/MPC/MPC_Project/src'
 import casadi.*
 %%
 
@@ -165,6 +166,24 @@ close all
 sim = quad.sim(mpc_x,mpc_y,mpc_z,mpc_yaw);
 quad.plot(sim);
 
+%%
+
+clc
+clear
+close all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SYSTEM DEFINITION FOR NMPC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+quad = Quad();
+
+%%
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NMPC SIMULATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+ctrl_NMPC(quad);
