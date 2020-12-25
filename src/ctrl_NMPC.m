@@ -1,9 +1,9 @@
-function [ctrl] = ctrl_NMPC(quad) 
+function [ctrl] = ctrl_NMPC(quad, pA, zA, yA, uA) 
     %%
     import casadi.*
     opti = casadi.Opti(); % Optimization problem 
     
-    N = 25; % MPC horizon 
+    N = 40; % MPC horizon 
     n  = 12;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,23 +21,16 @@ function [ctrl] = ctrl_NMPC(quad)
     
 %     epsilon_u = opti.variable(4,N); % slack variable
     
-    opti.minimize(...
-                 ( X(10,1:N) - REF(1) ) * ( X(10,1:N) - REF(1) )' + ... %minize X error
-                 ( X(11,1:N) - REF(2) ) * ( X(11,1:N) - REF(2) )' + ... %minize Y error
-        10  *    ( X(12,1:N) - REF(3) ) * ( X(12,1:N) - REF(3) )' + ... %minize Z error
-                     ( X(6, 1:N) - REF(4) ) * ( X(6, 1:N) - REF(4) )' ) %%+ ...   %minize YAW error
-%         10000 *  ( sum( sum( epsilon_u.*epsilon_u ) ))            + ...
-%         1000 *   sum( sum ( epsilon_u ) ) ...
-%        ) 
-    
-    
-%         10   *   ( X(10,1:N) - REF(1) ) * ( X(10,1:N) - REF(1) )' + ... %terminal X constraint
-%         10   *  ( X(11,1:N) - REF(2) ) * ( X(11,1:N) - REF(2) )' + ... %terminal Y constraint
-%         10   *  ( X(12,1:N) - REF(3) ) * ( X(12,1:N) - REF(3) )' + ... %terminal Z constraint
-%  10   *  ( X(6 ,1:N) - REF(4) ) * ( X(6 ,1:N) - REF(4) )'  %terminal YAW constraint
+    if nargin < 2
+        pA = 1; zA = 100; yA = 1; uA = 0.1;
+    end
 
-    
-    % ADD EPSILON THERE
+    opti.minimize(...
+        pA *     ( X(10,1:N) - REF(1) ) * ( X(10,1:N) - REF(1) )' + ...     % minimize X error
+        pA *     ( X(11,1:N) - REF(2) ) * ( X(11,1:N) - REF(2) )' + ...     % minimize Y error
+        zA *     ( X(12,1:N) - REF(3) ) * ( X(12,1:N) - REF(3) )' + ...    % minimize Z error
+        yA *     ( X(6, 1:N) - REF(4) ) * ( X(6, 1:N) - REF(4) )' + ...     % minimize YAW error
+        uA *     ( sum(U,1) * sum(U,1)' ) )                                 % minimize total throttle use
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % CONSTRAINT SATISFACTION : 

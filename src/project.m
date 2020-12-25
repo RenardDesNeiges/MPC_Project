@@ -186,7 +186,11 @@ quad = Quad();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-MPC = ctrl_NMPC(quad);
+pA = 1;
+zA = 100;
+yawA = 1;
+uA = 0.01;
+MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
 
 sim = quad.sim(MPC);
 
