@@ -166,10 +166,21 @@ close all
 sim = quad.sim(mpc_x,mpc_y,mpc_z,mpc_yaw);
 quad.plot(sim);
 
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ANIMATING THE LINEAR MPC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+[thL,xhL,uhL,rhL] = saveRun(quad, mpc_x,mpc_y,mpc_z,mpc_yaw);
+
+%%
+
+animate(quad,xhL,uhL,thL,rhL)
+
 %%
 
 clc
-clear
 close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -187,10 +198,21 @@ quad = Quad();
 
 
 pA = 1;
-zA = 100;
+zA = 10;
 yawA = 1;
 uA = 0.01;
 MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
+
+%%
+
+
+[thN,xhN,uhN,rhN] = saveRun(quad, MPC);
+
+%%
+
+animate(quad,xhN,uhN,thN,rN)
+
+%%
 
 sim = quad.sim(MPC);
 

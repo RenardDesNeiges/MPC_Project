@@ -3,7 +3,7 @@ function [ctrl] = ctrl_NMPC(quad, pA, zA, yA, uA)
     import casadi.*
     opti = casadi.Opti(); % Optimization problem 
     
-    N = 40; % MPC horizon 
+    N = 25; % MPC horizon 
     n  = 12;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

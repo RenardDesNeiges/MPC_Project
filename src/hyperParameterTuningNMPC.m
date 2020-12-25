@@ -13,16 +13,45 @@ quad = Quad();
 %%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% SCORING A RUN
+% SCORING A RUN (AND TIMING SCORING)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 pA = 1;
 zA = 100;
 yawA = 1;
-uA = 0.01;
+
 MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
+tic
 [maxE,meanE] = scoreRun(quad, MPC)
+toc
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+% SCORING SEVERAL RUNS (AND TIMING SCORING)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+pA = 1;
+yawA = 1;
+uA = 0.01;
+
+zAs = []
+maxS = []
+avgS = []
+
+for i = 0:9
+    zA = 10^(i/3.2) * 0.5
+   
+    MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
+    tic
+    [maxE,meanE] = scoreRun(quad, MPC);
+    toc
+    
+    zAs = [ zAs, zA ];
+    maxS = [ maxS, maxE ];
+    avgS = [ avgS, meanE ];
+end
+
 %%
 
 function [maxE,meanE] = scoreRun(quad,MPC) 
