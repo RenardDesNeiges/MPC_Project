@@ -8,6 +8,10 @@ MPC control of a quadcopter. Two different algorithms
 
 Implementation of 4 linear tracking (offset-free) MPCs to control 4 independant (under the conditions of linearization) subsystems for **x**,  **y**, **z** and **yaw**.
 
+![mpc](mpc.gif)
+
 ### 2 Non Linear tracking MPC (NMPC)
 
 Non linear MPC implementation.
+
+![nmpc](nmpc.gif)

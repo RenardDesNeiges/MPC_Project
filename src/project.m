@@ -210,7 +210,7 @@ MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
 
 %%
 
-animate(quad,xhN,uhN,thN,rN)
+animate(quad,xhN,uhN,thN,rhN)
 
 %%
 
