@@ -186,4 +186,9 @@ quad = Quad();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-ctrl_NMPC(quad);
+MPC = ctrl_NMPC(quad);
+
+sim = quad.sim(MPC);
+
+
+quad.plot(sim);
