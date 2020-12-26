@@ -3,8 +3,10 @@ function [ctrl] = ctrl_NMPC(quad, pA, zA, yA, uA)
     import casadi.*
     opti = casadi.Opti(); % Optimization problem 
     
-    N = 25; % MPC horizon 
-    n  = 12;
+    Ts = quad.Ts; % sampling period
+    
+    N = 40; % MPC horizon 
+    n  = 12;% state dimensionality
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DECISION VARIABLES : 
@@ -20,11 +22,12 @@ function [ctrl] = ctrl_NMPC(quad, pA, zA, yA, uA)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 %     epsilon_u = opti.variable(4,N); % slack variable
+
     
     if nargin < 2
         pA = 1; zA = 100; yA = 1; uA = 0.1;
     end
-
+%%
     opti.minimize(...
         pA *     ( X(10,1:N) - REF(1) ) * ( X(10,1:N) - REF(1) )' + ...     % minimize X error
         pA *     ( X(11,1:N) - REF(2) ) * ( X(11,1:N) - REF(2) )' + ...     % minimize Y error
@@ -37,8 +40,15 @@ function [ctrl] = ctrl_NMPC(quad, pA, zA, yA, uA)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     for k=1:N % loop over control intervals
+        
+      % Runge-Kutta 4 integration
+      
+      k1 = quad.f( X(:,k)              , U(:,k) );
+      k2 = quad.f( X(:,k) + (Ts/2) * k1, U(:,k) );
+      k3 = quad.f( X(:,k) + (Ts/2) * k2, U(:,k) );
+      k4 = quad.f( X(:,k) +  Ts    * k3, U(:,k) );
     
-      opti.subject_to(X(:,k+1) == X(:,k) + quad.Ts*quad.f(X(:,k),U(:,k)) )
+      opti.subject_to(X(:,k+1) == X(:,k) + ( (Ts/6) * (k1 + 2*k2 + 2*k3 + k4) ) );
     
     end
     

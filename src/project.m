@@ -197,10 +197,10 @@ quad = Quad();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-pA = 1;
-zA = 10;
+pA = 2;
+zA = 30;
 yawA = 1;
-uA = 0.01;
+uA = 4;
 MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
 
 %%
@@ -210,11 +210,17 @@ MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
 
 %%
 
+sqex = ( rhN(1,:)- xhN(10,:) ).^2;
+sqey = ( rhN(2,:)- xhN(11,:) ).^2;
+sqez = ( rhN(3,:)- xhN(12,:) ).^2;
+sqeyaw = ( rhN(4,:)- xhN(6,:) ).^2;
+sqe = sum( [sqex;sqey;sqez;sqeyaw] ,1).^0.5 ;
+maxE = max(sqe)
+meanE = mean(sqe)
+
 animate(quad,xhN,uhN,thN,rhN)
 
 %%
 
 sim = quad.sim(MPC);
-
-
 quad.plot(sim);
