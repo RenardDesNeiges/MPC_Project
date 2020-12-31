@@ -1,6 +1,6 @@
-function animate(quad,xh,uh,th,rh)
+function animate(quad,xh,uh,th,rh,loop)
 
-
+    
     for i = 1:size(th,2)
         figure(1)
 
@@ -16,11 +16,25 @@ function animate(quad,xh,uh,th,rh)
         axis equal
         axis vis3d
         
-        xlim([-0.4 4])
-        ylim([-0.4 2])
-        zlim([-0.3 2])
+        if nargin > 5
+            xlim([-10 10])
+            ylim([-30 15])
+            zlim([-30 70])
+        else
+            xlim([-0.4 4])
+            ylim([-0.4 2])
+            zlim([-0.3 2])
+        end
         
         pause(0.01)
+        
+        figure(2)
+        clf
+        quad.plot_point(xh(:,i),uh(:,i));
+        axis equal
+        axis vis3d
     
     end
+    
+    
 end

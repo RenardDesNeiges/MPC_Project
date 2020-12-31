@@ -224,3 +224,68 @@ animate(quad,xhN,uhN,thN,rhN)
 
 sim = quad.sim(MPC);
 quad.plot(sim);
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LOOP BECAUSE ITS 2AM AND I NEED DOPAMINE OR SMTH IDK
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+pA = 5;
+zA = 1;
+yawA = 1;
+uA = 1;
+aA = 200;
+LMPC = ctrl_NMPC_loop(quad, pA, zA, yawA,uA,aA);
+
+
+%%
+
+
+[thN,xhN,uhN,rhN] = loopRun(quad, LMPC);
+%%
+
+subplot(2,2,1)
+plot(thN,rhN(5,:),thN,xhN(4,:),thN,rhN(7,:))
+title("pitch")
+
+
+subplot(2,2,2)
+plot(thN,rhN(3,:),thN,xhN(12,:),thN,rhN(7,:))
+title("z")
+
+subplot(2,2,3)
+plot(thN,rhN(1,:),thN,xhN(10,:),thN,rhN(7,:))
+title("x")
+
+
+subplot(2,2,4)
+plot(thN,uhN(1,:),thN,uhN(2,:),thN,uhN(3,:),thN,uhN(4,:))
+title("u")
+
+%%
+
+subplot(3,1,1)
+plot(thN,xhN(4,:),thN,xhN(5,:),thN,xhN(6,:))
+title("pitch, roll, yaw")
+legend("pitch","roll","yaw")
+
+subplot(3,1,2)
+plot(thN,xhN(10,:),thN,xhN(11,:),thN,xhN(12,:))
+title("x, y, z")
+legend("x","y","z")
+
+
+subplot(3,1,3)
+plot(thN,uhN(1,:),thN,uhN(2,:),thN,uhN(3,:),thN,uhN(4,:))
+title("u")
+legend("u1","u2","u3","u4")
+
+
+%%
+
+animate(quad,xhN,uhN,thN,rhN,true)
+
+%%
+
+plotTrace(quad,xhN,uhN,thN,rhN,true)

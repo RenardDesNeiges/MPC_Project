@@ -5,7 +5,7 @@ function [ctrl] = ctrl_NMPC(quad, pA, zA, yA, uA)
     
     Ts = quad.Ts; % sampling period
     
-    N = 40; % MPC horizon 
+    N = 25; % MPC horizon 
     n  = 12;% state dimensionality
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
