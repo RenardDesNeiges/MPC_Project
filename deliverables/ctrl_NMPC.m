@@ -20,13 +20,12 @@ function [ctrl] = ctrl_NMPC(quad)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % COST FUNCTION AND MINIMIZATION TARGET : 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-%     epsilon_u = opti.variable(4,N); % slack variable
 
     
     % relative costs
     pA = 2; zA = 30; yA = 1; uA = 4;
     
+    % cost function
     opti.minimize( ...
         pA *     ( X(10,1:N) - REF(1) ) * ( X(10,1:N) - REF(1) )' + ...     % minimize X error
         pA *     ( X(11,1:N) - REF(2) ) * ( X(11,1:N) - REF(2) )' + ...     % minimize Y error
@@ -46,21 +45,24 @@ function [ctrl] = ctrl_NMPC(quad)
       k2 = quad.f( X(:,k) + (Ts/2) * k1, U(:,k) );
       k3 = quad.f( X(:,k) + (Ts/2) * k2, U(:,k) );
       k4 = quad.f( X(:,k) +  Ts    * k3, U(:,k) );
-    
+      
+      % system dynamics as a constraint
       opti.subject_to(X(:,k+1) == X(:,k) + ( (Ts/6) * (k1 + 2*k2 + 2*k3 + k4) ) );
     
     end
     
+    % input constraints
     for i = 1: size(U,1)
         opti.subject_to( 0 <= U(i,:));
         opti.subject_to( U(i,:)  <= 1.5 );
     end
     
+    % x0 as a constraint
     opti.subject_to(X(:,1)==X0);
     
+    % final controller object
     ctrl = @(x,ref) eval_ctrl(x, ref, opti, X0, REF, X, U);
     
-    %%
     
 end
 

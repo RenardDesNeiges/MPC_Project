@@ -450,6 +450,11 @@ classdef Quad
       I = linspace(1, length(sim), Nplots);
       I = unique(ceil(I));
       
+      title('Simulation for tracking')
+      xlabel('x[m]')
+      ylabel('y[m]')
+      zlabel('z[m]')
+      
       for i = 1:length(I)
         quad.plot_point(sim(I(i)).x, sim(I(i)).u);
       end

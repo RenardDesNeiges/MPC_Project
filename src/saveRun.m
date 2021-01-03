@@ -1,9 +1,10 @@
 function [th,xh,uh,rh] = saveRun(quad, ctrl_x, ctrl_y, ctrl_z, ctrl_yaw, input_bias)
       sim.t = 0;
-      sim.x = zeros(12,1);
+      x0 = zeros(12,1); x0(4) = pi
+      sim.x = x0;
       sim.z_hat = zeros(3,1); % Offset free for z-dimension
       Ts = quad.Ts;
-      Tf = 40;
+      Tf = 30;
       
       th = (1:ceil(Tf/Ts))./ceil(Tf/Ts);
       xh = zeros(12,ceil(Tf/Ts));
@@ -22,9 +23,11 @@ function [th,xh,uh,rh] = saveRun(quad, ctrl_x, ctrl_y, ctrl_z, ctrl_yaw, input_b
       
       for i = 1:ceil(Tf/Ts)
         
+        progress = (i/ceil(Tf/Ts))*100
+        
         % Compute reference
         sim(i).ref = ref(sim(i).t, sim(i).x);
-        rh(:,i) = sim(i).ref;
+        rh(:,i) = [0;0;0;0]; %sim(i).ref;
         
         % Simulate forward in time
         sim(i+1).t = sim(i).t + Ts;

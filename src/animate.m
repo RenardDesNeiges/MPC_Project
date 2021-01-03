@@ -17,9 +17,9 @@ function animate(quad,xh,uh,th,rh,loop)
         axis vis3d
         
         if nargin > 5
-            xlim([-10 10])
-            ylim([-30 15])
-            zlim([-30 70])
+            xlim([-100 100])
+            ylim([-100 100])
+            zlim([-150 30])
         else
             xlim([-0.4 4])
             ylim([-0.4 2])

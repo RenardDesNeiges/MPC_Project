@@ -196,17 +196,23 @@ quad = Quad();
 % NMPC SIMULATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%
+MPC = ctrl_NMPC(quad);
 
-pA = 2;
-zA = 30;
-yawA = 1;
-uA = 4;
-MPC = ctrl_NMPC(quad, pA, zA, yawA, uA);
+%%
+
+sim = quad.sim(MPC);
+%%
+quad.plot(sim);
 
 %%
 
 
 [thN,xhN,uhN,rhN] = saveRun(quad, MPC);
+
+%%
+
+plotTrace(quad,xhN,uhN,thN,rhN,true)
 
 %%
 
@@ -218,12 +224,26 @@ sqe = sum( [sqex;sqey;sqez;sqeyaw] ,1).^0.5 ;
 maxE = max(sqe)
 meanE = mean(sqe)
 
-animate(quad,xhN,uhN,thN,rhN)
+animate(quad,xhN,uhN,thN,rhN,true)
 
 %%
 
-sim = quad.sim(MPC);
-quad.plot(sim);
+subplot(3,1,1)
+plot(thN,xhN(4,:),thN,xhN(5,:),thN,xhN(6,:))
+title("pitch, roll, yaw")
+legend("pitch","roll","yaw")
+
+subplot(3,1,2)
+plot(thN,xhN(10,:),thN,xhN(11,:),thN,xhN(12,:))
+title("x, y, z")
+legend("x","y","z")
+
+
+subplot(3,1,3)
+plot(thN,uhN(1,:),thN,uhN(2,:),thN,uhN(3,:),thN,uhN(4,:))
+title("u")
+legend("u1","u2","u3","u4")
+
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
