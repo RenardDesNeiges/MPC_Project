@@ -1,6 +1,3 @@
-%In order to visualize the terminal sets, please uncomment the corresponding code
-%sections in files: MPC_Control_y, MPC_Control_x, MPC_Control_z and
-%MPC_Control_yaw
 clc
 clear
 close all
@@ -8,7 +5,10 @@ close all
 addpath('casadi-windows-matlabR2016a-v3.5.5')
 import casadi.*
 %% DELIVERABLE 3.1 %%
- 
+ %In order to visualize the terminal sets, please set the global variable
+%PLOT to 1
+ global PLOT;
+ PLOT=0;
  Ts       = 1/5;
  quad     = Quad(Ts);
  [xs, us] = quad.trim();

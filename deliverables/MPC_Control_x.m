@@ -40,7 +40,7 @@ classdef MPC_Control_x < MPC_Control
       % System
       A = mpc.A;
       B = mpc.B;
-      Q = eye(n); Q(n-1, n-1) = 30; Q(n,n) = 100;
+      Q = eye(n); Q(n-1, n-1) = 10; Q(n,n) = 50;
       R = eye(m);
       
       % Constraints
