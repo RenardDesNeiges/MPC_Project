@@ -5,7 +5,7 @@ close all
 addpath('casadi-windows-matlabR2016a-v3.5.5')
 import casadi.*
 %% DELIVERABLE 3.2 %%
- 
+ PLOT=0;
  Ts       = 1/5;
  quad     = Quad(Ts);
  [xs, us] = quad.trim();
