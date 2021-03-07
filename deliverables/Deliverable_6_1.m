@@ -6,13 +6,6 @@ addpath('casadi-windows-matlabR2016a-v3.5.5')
 import casadi.*
 
 %%
-clc
-clear
-tbxmanager restorepath
-addpath '/Users/renard/Documents/etudes/EPFLMA1/MPC/casadi-osx-matlabR2015a-v3.5.5'
-addpath '/Users/renard/Documents/etudes/EPFLMA1/MPC/MPC_Project/deliverables'
-import casadi.*
-%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NMPC SYSTEM DEFINITION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
